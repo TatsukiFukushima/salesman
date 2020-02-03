@@ -2,6 +2,7 @@ const n = 15;
 const nMinus = n-1;
 let points = [];
 let distances = [];
+let vectors = [];
 let results = Array(nMinus).fill(0);
 let minDistance = 1000000;
 
@@ -12,17 +13,20 @@ function setup() {
     points[i] = p;
   }
 
-  // 各点ごとの距離を計算
+  // 各点ごとの距離とベクトルを計算
   for (let i = 0; i < n; i++) {
     let distance = [];
+    let vector = [];
     for (let j = 0; j < n; j++) {
       if (i == j) {
         distance[j] = 0;
       } else {
-        distance[j] = Math.sqrt(Math.pow(points[i][0] - points[j][0], 2) + Math.pow(points[i][1] - points[j][1], 2));
+        vector[j] = [points[j][0] - points[i][0], points[j][1] - points[i][1]];
+        distance[j] = Math.sqrt(Math.pow(vector[j][0], 2) + Math.pow(vector[j][1], 2));
       }
     }
     distances[i] = distance;
+    vectors[i] = vector;
   }
 
   calcStartTime = millis();
@@ -101,31 +105,20 @@ function isCross(i, route, addNumber) {
   if (i == 0) {
     return false;
   } else {
-    const newPointX2 = points[addNumber][0];
-    const newPointY2 = points[addNumber][1];
-    const newPointX1 = points[route[i]][0];
-    const newPointY1 = points[route[i]][1];
+    const vector = vectors[route[i]];
 
-    for (let j=0; j<=i; j++) {
-      const oldPointX2 = points[route[j]][0];
-      const oldPointY2 = points[route[j]][1];
+    for (let j=0; j<i; j++) {
       if (j == 0) {
-        var oldPointX1 = points[nMinus][0];
-        var oldPointY1 = points[nMinus][1];
+        var v1 = vector[nMinus];
       } else {
-        var oldPointX1 = points[route[j-1]][0];
-        var oldPointY1 = points[route[j-1]][1];
+        var v1 = vector[route[j-1]];
       }
 
-      const v1X = oldPointX2-newPointX1;
-      const v1Y = oldPointY2-newPointY1;
-      const v2X = oldPointX1-newPointX1;
-      const v2Y = oldPointY1-newPointY1;
-      const v3X = newPointX2-newPointX1;
-      const v3Y = newPointY2-newPointY1;
-      const tUp = (v2Y*v3X-v2X*v3Y);
-      const uUp = (v1X*v3Y-v1Y*v3X);
-      const paramsDown = v1X*v2Y-v1Y*v2X;
+      const v2 = vector[route[j]];
+      const v3 = vector[addNumber];
+      const tUp = (v2[1]*v3[0]-v2[0]*v3[1]);
+      const uUp = (v1[0]*v3[1]-v1[1]*v3[0]);
+      const paramsDown = v1[0]*v2[1]-v1[1]*v2[0];
 
       // なるべく早く判断できるように調整
       if (tUp*uUp>0) {
