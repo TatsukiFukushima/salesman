@@ -24,6 +24,8 @@ function setup() {
     distances[i] = distance;
   }
 
+  calcStartTime = millis();
+
   // ルートを探索。最初のみsetupに書く。
   var route = Array(nMinus).fill(0);
   var isAdded = Array(nMinus).fill(false);
@@ -37,6 +39,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   background(0);
   startTime = millis();
+  console.log((startTime-calcStartTime)/1000);
 }
 
 function draw() {
