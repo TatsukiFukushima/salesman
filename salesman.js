@@ -9,16 +9,16 @@ let minDistance = 1000000;
 
 function setup() {
   // 点を配置
-  for (let i = 0; i < n; i++) {
+  for (let i = 0; i < n; i = (i+1)|0) {
     let p = [Math.random() * windowWidth, Math.random() * windowHeight];
     points[i] = p;
   }
 
   // 各点ごとの距離とベクトルを計算
-  for (let i = 0; i < n; i++) {
+  for (let i = 0; i < n; i = (i+1)|0) {
     let distance = [];
     let vector = [];
-    for (let j = 0; j < n; j++) {
+    for (let j = 0; j < n; j=(j+1)|0) {
       if (i == j) {
         distance[j] = 0;
       } else {
@@ -35,12 +35,12 @@ function setup() {
   // ルートを探索。最初のみsetupに書く。
   let route = Array(nMinus).fill(0);
   let isAdded = Array(nMinus).fill(false);
-  for(let addNumber = 0; addNumber < nMinus2; addNumber++) {
+  for(let addNumber = 0; addNumber < nMinus2; addNumber = (addNumber+1)|0) {
     let currentDistance = distances[nMinus][addNumber]
     isAdded[addNumber] = true;
     route[0] = addNumber;
     // 最後の点で場合分け。重複を防ぐため。
-    for(let lastNumber = addNumber+1; lastNumber < nMinus; lastNumber++) {
+    for(let lastNumber = addNumber+1; lastNumber < nMinus; lastNumber = (lastNumber+1)|0) {
       isAdded[lastNumber] = true;
       route[nMinus2] = lastNumber;
       calcRoute(0, route, isAdded, currentDistance+distances[nMinus][lastNumber]);
@@ -67,13 +67,13 @@ function calcRoute(i, route, isAdded, currentDistance) {
   }
   if (i+2 == nMinus) {
     if (currentDistance + distances[route[i]][route[nMinus2]] < minDistance) {
-      for (let j=0; j<nMinus; j++) { // 値渡しをしたいため
+      for (let j=0; j<nMinus; j = (j+1)|0) { // 値渡しをしたいため
         results[j] = route[j];
       }
       minDistance = currentDistance + distances[route[i]][route[nMinus2]];
     }
   } else {
-    for(let addNumber = 0; addNumber < nMinus; addNumber++) {
+    for(let addNumber = 0; addNumber < nMinus; addNumber = (addNumber+1)|0) {
       if (isAdded[addNumber] || isCross(i, route, addNumber)) {
 			  continue
 		  }
@@ -113,7 +113,7 @@ function isCross(i, route, addNumber) {
   const vector = vectors[route[i]];
   const v3 = vector[addNumber];
 
-  for (let j=-1; j<i; j++) {
+  for (let j=-1; j<i; j = (j+1)|0) {
     if (j < 1) {
       var v1 = vector[nMinus];
       if (j == -1) {
